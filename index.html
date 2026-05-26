@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💌 For you...</title>
+  <title>💌 Para ti...</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&display=swap"
     rel="stylesheet"
@@ -286,12 +286,12 @@
     <span class="petal" style="bottom:24px;right:4px;animation-delay:1.7s">✿</span>
 
     <div class="avatar">🐱</div>
-    <h1>Will you go on a date<br>with me? 🌸</h1>
+    <h1>¿Quieres salir<br>conmigo? 🌸</h1>
 
     <div id="tries-msg"></div>
 
     <div style="margin-top:28px">
-      <button class="btn-yes" onclick="handleYes()">YES 💕</button>
+      <button class="btn-yes" onclick="handleYes()">SÍ 💕</button>
     </div>
 
     <!-- Invisible placeholder so layout doesn't jump; real no-btn is fixed -->
@@ -304,15 +304,16 @@
   no... 🙈
 </button>
 
+
 <!-- ════════════════════════════════════════════════════
      SCREEN 2 — SURPRISED
 ══════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-2">
   <div class="card">
     <div class="avatar" style="background:#ddf0ff;border-radius:50%;font-size:3.5rem;">😱</div>
-    <h2>WAIT YOU ACTUALLY<br>SAID YES?? 😭</h2>
-    <p class="subtitle">I was so ready for you to say no 🥺</p>
-    <button class="btn-yes" onclick="goTo(3)">okay okay! →</button>
+    <h2>¿EN SERIO DIJISTE<br>QUE SÍ?? 😭</h2>
+    <p class="subtitle">Ya me preparaba para que dijeras no 🥺</p>
+    <button class="btn-yes" onclick="goTo(3)">¡bueno bueno! →</button>
   </div>
 </div>
 
@@ -322,13 +323,13 @@
 <div class="screen" id="screen-3">
   <div class="card">
     <div style="font-size:2.4rem;margin-bottom:14px">📅 🐾</div>
-    <h1>So... when are you free?</h1>
+    <h1>Entonces... ¿cuándo tienes tiempo?</h1>
 
     <div style="margin-top:22px;text-align:left">
-      <label class="field-label">Pick a Day ✨</label>
+      <label class="field-label">Elige un día ✨</label>
       <input type="date" class="field-input" id="date-input" />
 
-      <label class="field-label">Pick a Time 🕐</label>
+      <label class="field-label">¿A qué hora? 🕐</label>
       <select class="field-input" id="time-input">
         <option value="">-- ¿A qué hora? --</option>
         <option value="12:00 pm">12:00 pm 🌤️</option>
@@ -341,7 +342,7 @@
       </select>
     </div>
 
-    <button class="btn-yes" onclick="handleDateSet()">set the date! 💕</button>
+    <button class="btn-yes" onclick="handleDateSet()">¡ponemos la fecha! 💕</button>
   </div>
 </div>
 
@@ -351,7 +352,7 @@
 <div class="screen" id="screen-4">
   <div class="card">
     <div style="font-size:2rem;margin-bottom:10px">🍜 ✨</div>
-    <h1 style="font-size:1.5rem">What are we feeling?</h1>
+    <h1 style="font-size:1.5rem">¿Qué se nos antoja?</h1>
 
     <div class="food-grid">
       <div class="food-item" onclick="toggleFood(this)">
@@ -386,11 +387,11 @@
     <div class="avatar round" style="background:var(--pink-bg);font-size:3.8rem">🐱</div>
 
     <p class="confirm-text" id="confirm-msg">
-      glad you didn't say no.<br>be ready, I'm coming to get you 🚗
+      qué bueno que no dijiste no.<br>prepárate, voy por ti 🚗
     </p>
 
     <p class="ps-text">
-      P.S. normal people text. I made a website during lunch, for you.<br>no big deal.
+      P.D. la gente normal manda mensajes. Yo hice un sitio web en el almuerzo, para ti.<br>sin importancia.
     </p>
 
     <div class="hearts-row">
@@ -440,13 +441,13 @@
 
   const MESSAGES = [
     'no... 🙈',
-    'nope 🏃',
-    'catch me if u can 😏',
-    'nice try 😅',
-    'still no 🙃',
-    'you\'ll never get me 😈',
-    'stoppp 🥺',
-    'ok fine... jk no 💀',
+    'nel 🏃',
+    'atrápame si puedes 😏',
+    'buen intento 😅',
+    'sigue siendo no 🙃',
+    'nunca me vas a agarrar 😈',
+    'páraleee 🥺',
+    'bueno sí... mentira no 💀',
     '...',
   ];
 
@@ -536,16 +537,16 @@
       dateStr = dt.toLocaleDateString('es-MX', { weekday: 'long', month: 'long', day: 'numeric' });
     }
 
-    let line = 'glad you didn\'t say no.<br>';
+    let line = 'qué bueno que no dijiste no.<br>';
     if (dateStr) line += `${dateStr}, `;
     if (chosenTime) {
-      line += `a las ${chosenTime}, I'm coming to get you 🚗`;
+      line += `a las ${chosenTime}, voy por ti 🚗`;
     } else {
-      line += `be ready, I'm coming to get you 🚗`;
+      line += `prepárate, voy por ti 🚗`;
     }
     if (picked.length) {
       line += `<br><span style="font-size:.88rem;font-style:normal;color:#c07090">
-        (thinking we go for ${picked.join(' + ')} 🍴)
+        (yo digo que vamos de ${picked.join(' + ')} 🍴)
       </span>`;
     }
 
