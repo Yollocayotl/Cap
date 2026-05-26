@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💌 For you...</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink:       #e87ab0;
+      --pink-light: #f4a0c0;
+      --pink-bg:    #fde8f0;
+      --lavender:   #d4b8e0;
+      --wine:       #5c1a1a;
+      --shadow:     rgba(220, 130, 170, 0.18);
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fff0f6 0%, #fff8f0 50%, #f3f0ff 100%);
+    }
+
+    /* ── Particles ──────────────────────────────────── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 1; }
+      100% { transform: translateY(-8vh)  rotate(400deg); opacity: 0; }
+    }
+
+    /* ── Screens ────────────────────────────────────── */
+    .screen {
+      display: none;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 24px 16px;
+    }
+    .screen.active { display: flex; animation: fadeUp .55s ease forwards; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Card ───────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: 28px;
+      padding: 40px 28px 36px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 12px 48px var(--shadow);
+      text-align: center;
+      position: relative;
+      overflow: visible;
+    }
+
+    /* ── Avatar ─────────────────────────────────────── */
+    .avatar {
+      width: 110px; height: 110px;
+      border-radius: 22px;
+      margin: 0 auto 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      background: var(--pink-bg);
+      animation: softPulse 2.4s ease-in-out infinite;
+    }
+    .avatar.round { border-radius: 50%; }
+    @keyframes softPulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.04); }
+    }
+
+    /* ── Typography ─────────────────────────────────── */
+    h1 {
+      font-size: clamp(1.4rem, 5vw, 1.85rem);
+      font-weight: 800;
+      color: var(--wine);
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    h2 {
+      font-size: clamp(1.5rem, 6vw, 2rem);
+      font-weight: 900;
+      color: var(--wine);
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .subtitle { color: #aaa; font-size: .88rem; margin-bottom: 24px; }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn-yes {
+      background: linear-gradient(135deg, var(--pink-light), var(--pink));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 44px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 5px 22px rgba(232, 122, 176, 0.42);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-yes:hover  { transform: scale(1.06); box-shadow: 0 7px 28px rgba(232,122,176,.55); }
+    .btn-yes:active { transform: scale(.97); }
+
+    /* No button — fixed, runs away */
+    #no-btn {
+      background: var(--lavender);
+      color: #5d3480;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      position: fixed;
+      z-index: 1000;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: font-size .2s, padding .2s, opacity .3s;
+      white-space: nowrap;
+    }
+
+    /* ── Floating flowers on card ───────────────────── */
+    .petal {
+      position: absolute;
+      font-size: 1.3rem;
+      pointer-events: none;
+      animation: sway 3s ease-in-out infinite alternate;
+    }
+    @keyframes sway {
+      from { transform: rotate(-12deg) scale(1); }
+      to   { transform: rotate(12deg)  scale(1.1); }
+    }
+
+    /* ── Date / Time inputs ─────────────────────────── */
+    .field-label {
+      display: block;
+      text-align: left;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--wine);
+      margin-bottom: 5px;
+    }
+    .field-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2.5px solid var(--pink-light);
+      border-radius: 13px;
+      font-size: 1rem;
+      font-family: 'Nunito', sans-serif;
+      color: var(--wine);
+      outline: none;
+      margin-bottom: 16px;
+      background: #fff;
+      transition: border-color .2s;
+    }
+    .field-input:focus { border-color: var(--pink); }
+
+    /* ── Food grid ──────────────────────────────────── */
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin: 18px 0 24px;
+    }
+    .food-item {
+      background: #fdf3f8;
+      border: 2.5px solid transparent;
+      border-radius: 16px;
+      padding: 14px 6px;
+      cursor: pointer;
+      transition: all .22s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .food-item:hover { background: var(--pink-bg); transform: scale(1.05); }
+    .food-item.selected {
+      border-color: var(--pink);
+      background: var(--pink-bg);
+      transform: scale(1.06);
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    .food-emoji { font-size: 2rem; }
+    .food-name  { font-size: .78rem; font-weight: 800; color: var(--wine); }
+
+    /* ── Confirm screen ─────────────────────────────── */
+    .confirm-text {
+      font-size: clamp(1.05rem, 4vw, 1.25rem);
+      font-weight: 800;
+      font-style: italic;
+      color: var(--wine);
+      line-height: 1.6;
+      margin: 14px 0 10px;
+    }
+    .ps-text {
+      font-size: .73rem;
+      color: #bbb;
+      font-style: italic;
+    }
+    .hearts-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+      font-size: 1.3rem;
+    }
+    .hearts-row span { animation: heartBounce 1s ease-in-out infinite; }
+    .hearts-row span:nth-child(2) { animation-delay: .15s; }
+    .hearts-row span:nth-child(3) { animation-delay: .30s; }
+    .hearts-row span:nth-child(4) { animation-delay: .45s; }
+    .hearts-row span:nth-child(5) { animation-delay: .60s; }
+    @keyframes heartBounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-9px); }
+    }
+
+    /* ── Confetti ───────────────────────────────────── */
+    .confetti-piece {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 3px;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-30px) rotate(0deg);   opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── Tries counter ──────────────────────────────── */
+    #tries-msg {
+      font-size: .78rem;
+      color: #ccc;
+      margin-top: 18px;
+      min-height: 1.2em;
+      transition: opacity .3s;
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 360px) {
+      .card { padding: 32px 18px 28px; }
+      .food-grid { gap: 8px; }
+      .food-item { padding: 10px 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ════════════════════════════════════════════════════
+     SCREEN 1 — PROPOSAL
+══════════════════════════════════════════════════════ -->
+<div class="screen active" id="screen-1">
+  <div class="card">
+    <!-- Petals decoration -->
+    <span class="petal" style="top:-16px;left:18px;animation-delay:0s">🌸</span>
+    <span class="petal" style="top:-10px;right:22px;animation-delay:.6s">🌺</span>
+    <span class="petal" style="bottom:18px;left:-8px;animation-delay:1.1s">🌸</span>
+    <span class="petal" style="bottom:24px;right:4px;animation-delay:1.7s">✿</span>
+
+    <div class="avatar">🐱</div>
+    <h1>Will you go on a date<br>with me? 🌸</h1>
+
+    <div id="tries-msg"></div>
+
+    <div style="margin-top:28px">
+      <button class="btn-yes" onclick="handleYes()">YES 💕</button>
+    </div>
+
+    <!-- Invisible placeholder so layout doesn't jump; real no-btn is fixed -->
+    <div id="no-placeholder" style="height:46px;margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- Fixed no-button (lives outside the card so it can roam the whole screen) -->
+<button id="no-btn" onmouseenter="escapeNoBtn()" ontouchstart="escapeNoBtn()">
+  no... 🙈
+</button>
+
+<!-- ════════════════════════════════════════════════════
+     SCREEN 2 — SURPRISED
+══════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-2">
+  <div class="card">
+    <div class="avatar" style="background:#ddf0ff;border-radius:50%;font-size:3.5rem;">😱</div>
+    <h2>WAIT YOU ACTUALLY<br>SAID YES?? 😭</h2>
+    <p class="subtitle">I was so ready for you to say no 🥺</p>
+    <button class="btn-yes" onclick="goTo(3)">okay okay! →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     SCREEN 3 — DATE PICKER
+══════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-3">
+  <div class="card">
+    <div style="font-size:2.4rem;margin-bottom:14px">📅 🐾</div>
+    <h1>So... when are you free?</h1>
+
+    <div style="margin-top:22px;text-align:left">
+      <label class="field-label">Pick a Day ✨</label>
+      <input type="date" class="field-input" id="date-input" />
+
+      <label class="field-label">Pick a Time 🕐</label>
+      <select class="field-input" id="time-input">
+        <option value="">-- ¿A qué hora? --</option>
+        <option value="12:00 pm">12:00 pm 🌤️</option>
+        <option value="1:00 pm">1:00 pm ☀️</option>
+        <option value="2:00 pm">2:00 pm ☀️</option>
+        <option value="5:00 pm">5:00 pm 🌅</option>
+        <option value="6:00 pm">6:00 pm 🌇</option>
+        <option value="7:00 pm">7:00 pm 🌆</option>
+        <option value="8:00 pm">8:00 pm 🌃</option>
+      </select>
+    </div>
+
+    <button class="btn-yes" onclick="handleDateSet()">set the date! 💕</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     SCREEN 4 — FOOD
+══════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-4">
+  <div class="card">
+    <div style="font-size:2rem;margin-bottom:10px">🍜 ✨</div>
+    <h1 style="font-size:1.5rem">What are we feeling?</h1>
+
+    <div class="food-grid">
+      <div class="food-item" onclick="toggleFood(this)">
+        <span class="food-emoji">🍕</span><span class="food-name">Pizza</span>
+      </div>
+      <div class="food-item" onclick="toggleFood(this)">
+        <span class="food-emoji">🍣</span><span class="food-name">Sushi</span>
+      </div>
+      <div class="food-item" onclick="toggleFood(this)">
+        <span class="food-emoji">🍔</span><span class="food-name">Burgers</span>
+      </div>
+      <div class="food-item" onclick="toggleFood(this)">
+        <span class="food-emoji">🍝</span><span class="food-name">Pasta</span>
+      </div>
+      <div class="food-item" onclick="toggleFood(this)">
+        <span class="food-emoji">🌮</span><span class="food-name">Tacos</span>
+      </div>
+      <div class="food-item" onclick="toggleFood(this)">
+        <span class="food-emoji">🍜</span><span class="food-name">Ramen</span>
+      </div>
+    </div>
+
+    <button class="btn-yes" onclick="handleFoodNext()">¡se ve bien! 💕</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     SCREEN 5 — CONFIRMATION
+══════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-5">
+  <div class="card">
+    <div class="avatar round" style="background:var(--pink-bg);font-size:3.8rem">🐱</div>
+
+    <p class="confirm-text" id="confirm-msg">
+      glad you didn't say no.<br>be ready, I'm coming to get you 🚗
+    </p>
+
+    <p class="ps-text">
+      P.S. normal people text. I made a website during lunch, for you.<br>no big deal.
+    </p>
+
+    <div class="hearts-row">
+      <span>🩷</span><span>🩷</span><span>🩷</span><span>🩷</span><span>🩷</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+  /* ── State ─────────────────────────────────────────── */
+  let tries = 0;
+  let chosenDate = '';
+  let chosenTime = '';
+
+  /* ── Particles ─────────────────────────────────────── */
+  const EMOJIS = ['🌸','🌺','✿','💕','🩷','✨','🌷'];
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    el.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      font-size: ${.7 + Math.random() * .9}rem;
+      animation-duration: ${9 + Math.random() * 14}s;
+      animation-delay: ${Math.random() * 12}s;
+    `;
+    container.appendChild(el);
+  }
+
+  /* ── No-button escape ──────────────────────────────── */
+  const noBtn = document.getElementById('no-btn');
+
+  function placeNoBtnInitially() {
+    const ph = document.getElementById('no-placeholder');
+    if (!ph) return;
+    const r = ph.getBoundingClientRect();
+    noBtn.style.left = r.left + 'px';
+    noBtn.style.top  = r.top  + 'px';
+  }
+
+  window.addEventListener('load', placeNoBtnInitially);
+  window.addEventListener('resize', placeNoBtnInitially);
+
+  const MESSAGES = [
+    'no... 🙈',
+    'nope 🏃',
+    'catch me if u can 😏',
+    'nice try 😅',
+    'still no 🙃',
+    'you\'ll never get me 😈',
+    'stoppp 🥺',
+    'ok fine... jk no 💀',
+    '...',
+  ];
+
+  function escapeNoBtn() {
+    tries++;
+
+    // Update label
+    const msg = MESSAGES[Math.min(tries - 1, MESSAGES.length - 1)];
+    noBtn.textContent = msg;
+
+    // Shrink progressively
+    const scale = Math.max(0.45, 1 - tries * 0.06);
+    noBtn.style.fontSize   = (scale) + 'rem';
+    noBtn.style.padding    = `${Math.max(5, 12 - tries * 1.2)}px ${Math.max(10, 28 - tries * 2.2)}px`;
+
+    // After many tries, fade it out and show a hint
+    if (tries >= 10) {
+      noBtn.style.opacity = '0.25';
+      document.getElementById('tries-msg').textContent = 'el botón de "no" se rindió 🥹';
+    } else if (tries >= 5) {
+      document.getElementById('tries-msg').textContent = `intento #${tries} fallido 😂`;
+    }
+
+    // Move to a random corner far from current position
+    const margin = 16;
+    const bw = noBtn.offsetWidth  || 100;
+    const bh = noBtn.offsetHeight || 44;
+    const maxX = window.innerWidth  - bw - margin;
+    const maxY = window.innerHeight - bh - margin;
+
+    const curX = parseFloat(noBtn.style.left) || window.innerWidth  / 2;
+    const curY = parseFloat(noBtn.style.top)  || window.innerHeight / 2;
+
+    let newX, newY;
+    // Pick a random quadrant that is far from current position
+    const halfW = window.innerWidth  / 2;
+    const halfH = window.innerHeight / 2;
+    newX = curX < halfW
+      ? halfW  + Math.random() * (maxX - halfW)
+      : margin + Math.random() * (halfW - bw - margin);
+    newY = curY < halfH
+      ? halfH  + Math.random() * (maxY - halfH)
+      : margin + Math.random() * (halfH - bh - margin);
+
+    noBtn.style.left = Math.max(margin, Math.min(maxX, newX)) + 'px';
+    noBtn.style.top  = Math.max(margin, Math.min(maxY, newY)) + 'px';
+  }
+
+  /* ── YES handler ──────────────────────────────────── */
+  function handleYes() {
+    spawnConfetti();
+    setTimeout(() => goTo(2), 250);
+  }
+
+  /* ── Screen navigation ────────────────────────────── */
+  function goTo(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + n).classList.add('active');
+    noBtn.style.display = (n === 1) ? '' : 'none';
+  }
+
+  /* ── Date screen ──────────────────────────────────── */
+  // Set min date to today
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('date-input').min = todayStr;
+
+  function handleDateSet() {
+    chosenDate = document.getElementById('date-input').value;
+    chosenTime = document.getElementById('time-input').value;
+    goTo(4);
+  }
+
+  /* ── Food screen ──────────────────────────────────── */
+  function toggleFood(el) {
+    el.classList.toggle('selected');
+  }
+
+  function handleFoodNext() {
+    const picked = [...document.querySelectorAll('.food-item.selected')]
+      .map(el => el.querySelector('.food-name').textContent);
+
+    let dateStr = '';
+    if (chosenDate) {
+      // Parse date safely (avoid timezone offset issues)
+      const [y, m, d] = chosenDate.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      dateStr = dt.toLocaleDateString('es-MX', { weekday: 'long', month: 'long', day: 'numeric' });
+    }
+
+    let line = 'glad you didn\'t say no.<br>';
+    if (dateStr) line += `${dateStr}, `;
+    if (chosenTime) {
+      line += `a las ${chosenTime}, I'm coming to get you 🚗`;
+    } else {
+      line += `be ready, I'm coming to get you 🚗`;
+    }
+    if (picked.length) {
+      line += `<br><span style="font-size:.88rem;font-style:normal;color:#c07090">
+        (thinking we go for ${picked.join(' + ')} 🍴)
+      </span>`;
+    }
+
+    document.getElementById('confirm-msg').innerHTML = line;
+    goTo(5);
+  }
+
+  /* ── Confetti ─────────────────────────────────────── */
+  function spawnConfetti() {
+    const colors = ['#f4a0c0','#d4b8e0','#a8d8f4','#f4d4a8','#a8f4d4','#ffd1f0'];
+    for (let i = 0; i < 72; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      const size = 5 + Math.random() * 7;
+      p.style.cssText = `
+        left: ${Math.random() * 100}vw;
+        top: -20px;
+        width: ${size}px;
+        height: ${size}px;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        border-radius: ${Math.random() > .5 ? '50%' : '2px'};
+        animation-duration: ${1.4 + Math.random() * 2.2}s;
+        animation-delay: ${Math.random() * .6}s;
+      `;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 4000);
+    }
+  }
+</script>
+</body>
+</html>
